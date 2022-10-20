@@ -3,13 +3,14 @@ import app from './firebase.init';
 import {
   getAuth,
   GoogleAuthProvider,
-  signInWithPopup
+  signInWithPopup,
+  signOut
 } from 'firebase/auth';
 import { useState } from 'react';
 
 const auth = getAuth(app);
 function App() {
-  const[user,setUser]=useState({});
+  const [user, setUser] = useState({});
   const provider = new GoogleAuthProvider();
 
   const handleGoogleSignIn = () => {
@@ -22,14 +23,27 @@ function App() {
       }).catch((error) => {
         console.error(error);
       })
-  }
+  };
+  const handleSignOut = () => {
+    
+    signOut(auth).then(() => {
+      // Sign-out successful.
+      setUser({});
+    }).catch((error) => {
+      // An error happened.
+      setUser({});
+    });
+  };
 
-  return (
+return (
     <div className="App">
-      <button onClick={handleGoogleSignIn}>Google Sign In</button>
+
+      {user.email? <button onClick={handleSignOut}>signOut</button>
+      :<button onClick={handleGoogleSignIn}>Google Sign In</button>}
+
       <h2>Name:{user.displayName}</h2>
-      <img style={{borderRadius:'100%'}} src={user.photoURL} alt="" />
-      <h3>{user.email}</h3>
+      <img style={{ borderRadius: '100%' }}  src= {user.photoURL} alt="" />
+      <h3> Email: {user.email}</h3>
     </div>
   );
 }
